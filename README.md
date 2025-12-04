@@ -32,18 +32,18 @@ Ele permite **gestão de eventos**, **compra de ingressos**, **envio automático
 
 O sistema segue uma **arquitetura baseada em microserviços**, organizados da seguinte forma:
 
-┌───────────────────┐ ┌───────────────────────┐
-│ tickets-system │ ---> │ RabbitMQ (mensageria)│
-│ (serviço central) │ └───────────────────────┘
-│ - API REST │ ↑ ↑
-│ - Regras de negócio│ │ │
-└───────────────────┘ │ │
-│ envia emailDTO │ │ ingressoDTO
-▼ ▼ ▼
-┌───────────────────┐ ┌────────────────────────┐
-│ email-service │ │ ticket-office │
-│ (envio de e-mail) │ │ (registro de tickets) │
-└───────────────────┘ └────────────────────────┘
+┌───────────────────┐ ┌───────────────────────┐  
+│ tickets-system │ ---> │ RabbitMQ (mensageria)│  
+│ (serviço central) │ └───────────────────────┘  
+│ - API REST │ ↑ ↑  
+│ - Regras de negócio│ │ │  
+└───────────────────┘ │ │  
+│ envia emailDTO │ │ ingressoDTO  
+▼ ▼ ▼  
+┌───────────────────┐ ┌────────────────────────┐  
+│ email-service │ │ ticket-office │  
+│ (envio de e-mail) │ │ (registro de tickets) │  
+└───────────────────┘ └────────────────────────┘  
 
 Cada serviço possui seu próprio banco **PostgreSQL** e pode ser executado de forma isolada.
 
@@ -74,29 +74,26 @@ Cada serviço possui seu próprio banco **PostgreSQL** e pode ser executado de f
 
 ## 📁 Estrutura dos Microserviços
 
-/tickets-system
-├── controllers
-├── dtos
-├── models
-├── producers
-├── services
+/tickets-system  
+├── controllers  
+├── dtos  
+├── models  
+├── producers  
+├── services  
 └── docker-compose.yml
 
-/email-service
-├── consumer
-├── dto
-├── services
-├── configuration (SMTP)
-└── build.gradle
+/email-service  
+├── consumer  
+├── dto  
+├── services  
+├── configuration (SMTP)  
+└── build.gradle  
 
-/ticket-office
-├── consumer
-├── model
-├── service
-└── docker-compose.yml
-
-yaml
-Copiar código
+/ticket-office  
+├── consumer  
+├── model  
+├── service  
+└── docker-compose.yml  
 
 ---
 
@@ -128,6 +125,7 @@ mvn spring-boot:run
 Configure o application.properties:
 ```
 properties
+
 spring.mail.host=smtp.gmail.com
 spring.mail.username=SEU_EMAIL
 spring.mail.password=SUA_SENHA_DE_APLICATIVO
@@ -142,49 +140,50 @@ docker compose up -d
 mvn spring-boot:run
 ```
 
-📨 Fluxo da Compra de Ingresso
+### 📨 Fluxo da Compra de Ingresso
 1. A API tickets-system recebe a compra
 2. Valida disponibilidade e cria ingressos
 3. Salva no banco
-4. Publica 2 mensagens no RabbitMQ:
-- emailDTO → email-service
-- ingressoDTO → ticket-office
+4. Publica 2 mensagens no RabbitMQ:  
+   &nbsp;&nbsp;&nbsp;- emailDTO → email-service  
+   &nbsp;&nbsp;&nbsp;- ingressoDTO → ticket-office
 5. O email-service envia o e-mail
 6. O ticket-office registra o ticket para validação
 
-📡 Rotas Principais (tickets-system)
+### 📡 Rotas Principais (tickets-system)
+
+**Eventos**
 ```
-Eventos
 POST /eventos
 GET  /eventos
 PUT  /eventos/{id}
 DELETE /eventos/{id}
 ```
+**Clientes**
 ```
-Clientes
 POST /clientes
 GET  /clientes
 ```
+**Compra de ingressos**
 ```
-Compra de ingressos
 POST /compras
 POST /ingressos
 ```
-Documentação da API
+#### Documentação da API
 A documentação da API (Swagger/OpenAPI) fica disponível em:
 ```
 http://localhost:8080/swagger-ui.html
 ```
-📦 Próximas Evoluções Planejadas
+### 📦 Próximas Evoluções Planejadas
 - Sistema de validação de ingressos via QR Code
 - Autenticação JWT
 - Dashboard web para visualização de vendas
 - Notificações (SMS, WhatsApp)
 - Front-end mobile para compradores
 
-🤝 Contribuições
+### 🤝 Contribuições
 Contribuições, sugestões e melhorias são bem-vindas!
 Sinta-se à vontade para abrir issues ou enviar PRs.
 
-📄 Licença
+### 📄 Licença
 Este projeto está sob a licença MIT.
