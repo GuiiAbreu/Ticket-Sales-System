@@ -1,0 +1,12 @@
+services:
+  bilheteria-database:
+    image: postgres:16
+    container_name: bilheteria-database
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: tickets
+    ports:
+      - "5433:5432"
+
